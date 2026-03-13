@@ -47,7 +47,7 @@ export function PhotoCapture({ imageDataUrl, onImageSelected, onClear }: PhotoCa
         ref={cameraInputRef}
         type="file"
         accept="image/*"
-        capture="environment"
+        capture
         onChange={handleFile}
         hidden
       />
