@@ -1,0 +1,16 @@
+{
+  "name": "TrigCheck",
+  "short_name": "TrigCheck",
+  "description": "Triglyceride-aware diet food analyzer",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF8",
+  "theme_color": "#1D9E75",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
