@@ -10,8 +10,8 @@ function loadSettings(): Settings {
     if (raw) return JSON.parse(raw);
   } catch { /* ignore */ }
   return {
-    provider: 'anthropic',
-    model: PROVIDER_MODELS.anthropic.models[0].id,
+    provider: 'openrouter',
+    model: PROVIDER_MODELS.openrouter.models[0].id,
   };
 }
 

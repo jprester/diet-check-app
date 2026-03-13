@@ -39,9 +39,9 @@ export const PROVIDER_MODELS: Record<LLMProvider, { label: string; models: { id:
   openrouter: {
     label: 'OpenRouter',
     models: [
+      { id: 'google/gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
       { id: 'anthropic/claude-sonnet-4', label: 'Claude Sonnet 4' },
       { id: 'openai/gpt-4o', label: 'GPT-4o' },
-      { id: 'google/gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
       { id: 'meta-llama/llama-4-maverick', label: 'Llama 4 Maverick' },
     ],
   },
