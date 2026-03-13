@@ -22,7 +22,10 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  min-height: 100dvh;
   -webkit-tap-highlight-color: transparent;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Header */
@@ -34,7 +37,7 @@ body {
   align-items: center;
   gap: 12px;
   position: sticky;
-  top: 0;
+  top: env(safe-area-inset-top);
   z-index: 10;
 }
 .logo-mark {
