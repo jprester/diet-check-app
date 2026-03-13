@@ -21,11 +21,10 @@ export interface HistoryItem {
   result: AnalysisResult;
 }
 
-export type LLMProvider = 'anthropic' | 'openai' | 'google';
+export type LLMProvider = 'anthropic' | 'openrouter';
 
 export interface Settings {
   provider: LLMProvider;
-  apiKey: string;
   model: string;
 }
 
@@ -37,18 +36,13 @@ export const PROVIDER_MODELS: Record<LLMProvider, { label: string; models: { id:
       { id: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5' },
     ],
   },
-  openai: {
-    label: 'OpenAI',
+  openrouter: {
+    label: 'OpenRouter',
     models: [
-      { id: 'gpt-4o', label: 'GPT-4o' },
-      { id: 'gpt-4o-mini', label: 'GPT-4o Mini' },
-    ],
-  },
-  google: {
-    label: 'Google',
-    models: [
-      { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
-      { id: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
+      { id: 'anthropic/claude-sonnet-4', label: 'Claude Sonnet 4' },
+      { id: 'openai/gpt-4o', label: 'GPT-4o' },
+      { id: 'google/gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
+      { id: 'meta-llama/llama-4-maverick', label: 'Llama 4 Maverick' },
     ],
   },
 };

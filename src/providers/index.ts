@@ -1,7 +1,4 @@
 import type { AnalysisResult, Settings } from '../types';
-import { analyzeWithAnthropic } from './anthropic';
-import { analyzeWithOpenAI } from './openai';
-import { analyzeWithGoogle } from './google';
 
 export const SYSTEM_PROMPT = `You are a clinical dietitian specialized in lipid disorders, particularly high triglycerides.
 The user is on a strict low-fat, low-carb diet to reduce elevated triglyceride levels.
@@ -21,10 +18,42 @@ JSON structure:
   "tip": "One concrete ordering/eating tip to make this as diet-friendly as possible, or a better alternative if it should be avoided."
 }`;
 
-export function getUserPrompt(text?: string): string {
+function getUserPrompt(text?: string): string {
   return text
     ? `Analyze this food for my low-fat, low-carb, triglyceride-reduction diet: ${text}`
     : 'Analyze this food image for my low-fat, low-carb, triglyceride-reduction diet.';
+}
+
+function parseResult(raw: string): AnalysisResult {
+  const clean = raw.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+function buildMessages(provider: string, imageBase64: string | null, text: string) {
+  const prompt = getUserPrompt(text || undefined);
+
+  if (provider === 'anthropic') {
+    const content: Array<Record<string, unknown>> = [];
+    if (imageBase64) {
+      content.push({
+        type: 'image',
+        source: { type: 'base64', media_type: 'image/jpeg', data: imageBase64 },
+      });
+    }
+    content.push({ type: 'text', text: prompt });
+    return [{ role: 'user', content }];
+  }
+
+  // OpenRouter uses OpenAI-style format
+  const content: Array<Record<string, unknown>> = [];
+  if (imageBase64) {
+    content.push({
+      type: 'image_url',
+      image_url: { url: `data:image/jpeg;base64,${imageBase64}` },
+    });
+  }
+  content.push({ type: 'text', text: prompt });
+  return [{ role: 'user', content }];
 }
 
 export async function analyzeFood(
@@ -32,17 +61,29 @@ export async function analyzeFood(
   imageBase64: string | null,
   text: string,
 ): Promise<AnalysisResult> {
-  switch (settings.provider) {
-    case 'anthropic':
-      return analyzeWithAnthropic(settings, imageBase64, text);
-    case 'openai':
-      return analyzeWithOpenAI(settings, imageBase64, text);
-    case 'google':
-      return analyzeWithGoogle(settings, imageBase64, text);
-  }
-}
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
 
-export function parseResult(raw: string): AnalysisResult {
-  const clean = raw.replace(/```json|```/g, '').trim();
-  return JSON.parse(clean);
+  const response = await fetch(`${baseUrl}/v1/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      provider: settings.provider,
+      model: settings.model,
+      system: SYSTEM_PROMPT,
+      messages: buildMessages(settings.provider, imageBase64, text),
+      max_tokens: 1024,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`API error: ${response.status} - ${err}`);
+  }
+
+  const data = await response.json();
+  return parseResult(data.response);
 }

@@ -46,12 +46,6 @@ export default function App() {
       return;
     }
 
-    if (!settings.apiKey) {
-      setShowSettings(true);
-      setError('Please enter your API key in settings.');
-      return;
-    }
-
     setLoading(true);
     setError(null);
     setResult(null);
@@ -82,7 +76,6 @@ export default function App() {
   }, []);
 
   const providerLabel = PROVIDER_MODELS[settings.provider].label;
-  const hasApiKey = settings.apiKey.length > 0;
 
   return (
     <>
@@ -101,8 +94,8 @@ export default function App() {
           <span className="context-chip">
             Low-fat &middot; Low-carb &middot; Triglyceride reduction
           </span>
-          <span className={`context-chip ${hasApiKey ? 'chip-ok' : 'chip-warn'}`}>
-            {providerLabel} {hasApiKey ? '(connected)' : '(no key)'}
+          <span className="context-chip chip-ok">
+            {providerLabel}
           </span>
         </div>
 

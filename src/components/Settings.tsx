@@ -49,18 +49,9 @@ export function Settings({ settings, onUpdate, onClose }: SettingsProps) {
           </select>
         </div>
 
-        <div className="settings-field">
-          <label>API Key</label>
-          <input
-            type="password"
-            value={settings.apiKey}
-            onChange={e => onUpdate({ apiKey: e.target.value })}
-            placeholder={`Enter your ${providerConfig.label} API key`}
-          />
-          <span className="settings-hint">
-            Stored locally in your browser. Never sent to any server except the provider's API.
-          </span>
-        </div>
+        <span className="settings-hint">
+          API keys are managed securely on the server.
+        </span>
       </div>
     </div>
   );
