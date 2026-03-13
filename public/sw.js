@@ -48,7 +48,9 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match('/'))
+        .catch(() => caches.match('/').then((cached) =>
+          cached || new Response('Offline', { status: 504, statusText: 'Gateway Timeout', headers: { 'Content-Type': 'text/plain' } })
+        ))
 
     );
     return;
