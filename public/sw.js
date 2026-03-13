@@ -20,7 +20,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((k) => k !== CACHE_NAME && k.startsWith('trigcheck-')).map((k) => caches.delete(k)))
     )
   );
   self.clients.claim();
@@ -40,13 +40,16 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const clone = response.clone();
-          event.waitUntil(
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
-          );
+          if (response.ok) {
+            const clone = response.clone();
+            event.waitUntil(
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+            );
+          }
           return response;
         })
-        .catch(() => caches.match(request))
+        .catch(() => caches.match('/'))
+
     );
     return;
   }
@@ -64,7 +67,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => cached);
+        .catch(() => cached || new Response('Offline', { status: 504, statusText: 'Gateway Timeout' }));
       return cached || fetchPromise;
     })
   );
