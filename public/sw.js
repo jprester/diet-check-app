@@ -36,16 +36,18 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     caches.match(request).then((cached) => {
-      const fetched = fetch(request).then((response) => {
+      const fetchPromise = fetch(request).then((response) => {
         // Cache successful responses for static assets
         if (response.ok) {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          event.waitUntil(
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+          );
         }
         return response;
       });
       // Return cached version immediately, update in background (stale-while-revalidate)
-      return cached || fetched;
+      return cached || fetchPromise;
     })
   );
 });
