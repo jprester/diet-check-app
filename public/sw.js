@@ -5,6 +5,7 @@ const STATIC_ASSETS = [
   '/favicon.svg',
   '/icon-192.png',
   '/icon-512.png',
+  '/apple-touch-icon.png',
 ];
 
 // Install: cache the app shell
@@ -25,28 +26,45 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for API calls, cache-first for static assets
+// Fetch: network-first for navigations, stale-while-revalidate for static assets
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // Never cache API calls
+  // Skip API calls and non-GET requests
   if (request.url.includes('/v1/chat') || request.method !== 'GET') {
     return;
   }
 
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      const fetchPromise = fetch(request).then((response) => {
-        // Cache successful responses for static assets
-        if (response.ok) {
+  // Network-first for navigations to avoid stale HTML after deploys
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
           const clone = response.clone();
           event.waitUntil(
             caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
           );
-        }
-        return response;
-      });
-      // Return cached version immediately, update in background (stale-while-revalidate)
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // Stale-while-revalidate for static assets
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      const fetchPromise = fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            event.waitUntil(
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+            );
+          }
+          return response;
+        })
+        .catch(() => cached);
       return cached || fetchPromise;
     })
   );
