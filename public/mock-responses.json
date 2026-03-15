@@ -1,0 +1,38 @@
+[
+  {
+    "verdict": "good",
+    "verdictLabel": "Great choice",
+    "verdictTitle": "Grilled salmon with steamed vegetables",
+    "fatScore": 3,
+    "carbScore": 2,
+    "trigRisk": 1,
+    "analysis": "Salmon is rich in omega-3 fatty acids which actively help lower triglycerides. The steamed vegetables add fiber without significant fat or carbs.",
+    "goodFactors": ["High omega-3", "Low carb", "High fiber", "Anti-inflammatory"],
+    "badFactors": [],
+    "tip": "Add a squeeze of lemon and avoid butter-based sauces to keep this meal optimal for triglyceride reduction."
+  },
+  {
+    "verdict": "ok",
+    "verdictLabel": "Eat with caution",
+    "verdictTitle": "Whole grain pasta with tomato sauce",
+    "fatScore": 3,
+    "carbScore": 7,
+    "trigRisk": 5,
+    "analysis": "While whole grain pasta is better than refined, the carb load can still raise triglycerides. The tomato sauce is fine but watch the portion size.",
+    "goodFactors": ["Whole grain fiber", "Low fat sauce", "Lycopene from tomatoes"],
+    "badFactors": ["High carb load", "Can spike blood sugar", "Easy to over-portion"],
+    "tip": "Limit to a small portion (about 1 cup cooked) and pair with a large side salad to fill up on fiber first."
+  },
+  {
+    "verdict": "avoid",
+    "verdictLabel": "Avoid",
+    "verdictTitle": "Glazed donut with chocolate icing",
+    "fatScore": 7,
+    "carbScore": 9,
+    "trigRisk": 9,
+    "analysis": "This combines refined carbs, sugar, and trans fats — the worst combination for triglycerides. The sugar glaze and chocolate icing add even more simple sugars.",
+    "goodFactors": [],
+    "badFactors": ["Very high sugar", "Trans fats", "Refined flour", "No nutritional value"],
+    "tip": "If you are craving something sweet, try a small handful of berries with a few walnuts instead."
+  }
+]
