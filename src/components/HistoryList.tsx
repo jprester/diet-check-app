@@ -1,25 +1,56 @@
-import type { HistoryItem } from '../types';
+import { useCallback } from "react";
+import type { HistoryItem } from "../types";
 
 interface HistoryListProps {
   items: HistoryItem[];
   onSelect: (item: HistoryItem) => void;
 }
 
+function exportHistory(items: HistoryItem[]) {
+  const exportData = items.map((item) => ({
+    id: item.id,
+    label: item.label,
+    verdict: item.verdict,
+    verdictLabel: item.verdictLabel,
+    time: item.time,
+    result: item.result,
+  }));
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `trigcheck-history-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export function HistoryList({ items, onSelect }: HistoryListProps) {
+  const handleExport = useCallback(() => exportHistory(items), [items]);
+
   if (items.length === 0) return null;
 
   return (
     <div className="history-section">
-      <h3>Recent checks</h3>
-      {items.map(item => {
+      <div className="history-header">
+        <h3>Recent checks</h3>
+        <button className="btn btn-sm btn-ghost" onClick={handleExport}>
+          Export
+        </button>
+      </div>
+      {items.map((item) => {
         const badgeClass =
-          item.verdict === 'good'
-            ? 'verdict-good'
-            : item.verdict === 'ok'
-              ? 'verdict-ok'
-              : 'verdict-avoid';
+          item.verdict === "good"
+            ? "verdict-good"
+            : item.verdict === "ok"
+              ? "verdict-ok"
+              : "verdict-avoid";
         return (
-          <div key={item.id} className="history-item" onClick={() => onSelect(item)}>
+          <div
+            key={item.id}
+            className="history-item"
+            onClick={() => onSelect(item)}>
             {item.thumb ? (
               <img src={item.thumb} className="history-thumb" alt="" />
             ) : (
