@@ -337,13 +337,19 @@ textarea::placeholder { color: var(--gray); }
 
 /* History */
 .history-section { margin-top: 28px; }
-.history-section h3 {
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.history-header h3 {
   font-size: 13px;
   font-weight: 500;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-bottom: 12px;
+  margin: 0;
 }
 .history-item {
   display: flex; align-items: center; gap: 12px;
