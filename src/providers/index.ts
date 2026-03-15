@@ -56,11 +56,22 @@ function buildMessages(provider: string, imageBase64: string | null, text: strin
   return [{ role: 'user', content }];
 }
 
+async function fetchMockResponse(): Promise<AnalysisResult> {
+  const response = await fetch('/mock-responses.json');
+  if (!response.ok) throw new Error('Failed to load mock responses');
+  const responses: AnalysisResult[] = await response.json();
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
 export async function analyzeFood(
   settings: Settings,
   imageBase64: string | null,
   text: string,
 ): Promise<AnalysisResult> {
+  if (import.meta.env.VITE_MOCK_API === 'true') {
+    return fetchMockResponse();
+  }
+
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
 
