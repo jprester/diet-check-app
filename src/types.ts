@@ -22,10 +22,12 @@ export interface HistoryItem {
 }
 
 export type LLMProvider = 'anthropic' | 'openrouter';
+export type Theme = 'light' | 'dark' | 'system';
 
 export interface Settings {
   provider: LLMProvider;
   model: string;
+  theme: Theme;
 }
 
 export const PROVIDER_MODELS: Record<LLMProvider, { label: string; models: { id: string; label: string }[] }> = {

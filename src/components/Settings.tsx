@@ -1,5 +1,11 @@
-import type { Settings as SettingsType, LLMProvider } from '../types';
+import type { Settings as SettingsType, LLMProvider, Theme } from '../types';
 import { PROVIDER_MODELS } from '../types';
+
+const THEME_OPTIONS: { value: Theme; label: string }[] = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+  { value: 'system', label: 'System' },
+];
 
 interface SettingsProps {
   settings: SettingsType;
@@ -47,6 +53,22 @@ export function Settings({ settings, onUpdate, onClose }: SettingsProps) {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="settings-field">
+          <label>Theme</label>
+          <div className="provider-buttons">
+            {THEME_OPTIONS.map(t => (
+              <button
+                key={t.value}
+                className={`provider-btn ${settings.theme === t.value ? 'active' : ''}`}
+                aria-pressed={settings.theme === t.value}
+                onClick={() => onUpdate({ theme: t.value })}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <span className="settings-hint">
