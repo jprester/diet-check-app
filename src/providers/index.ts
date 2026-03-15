@@ -58,7 +58,7 @@ function buildMessages(provider: string, imageBase64: string | null, text: strin
 
 async function fetchMockResponse(): Promise<AnalysisResult> {
   const response = await fetch('/mock-responses.json');
-  if (!response.ok) throw new Error('Failed to load mock responses');
+  if (!response.ok) throw new Error(`Failed to load mock responses: ${response.status} ${response.statusText}`);
   const responses: AnalysisResult[] = await response.json();
   if (!Array.isArray(responses) || responses.length === 0) {
     throw new Error('Mock responses file is empty or invalid');
