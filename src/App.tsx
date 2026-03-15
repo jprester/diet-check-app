@@ -1,36 +1,38 @@
-import { useState, useCallback } from 'react';
-import type { AnalysisResult, HistoryItem } from './types';
-import { PROVIDER_MODELS } from './types';
-import { useSettings } from './hooks/useSettings';
-import { analyzeFood } from './providers';
-import { compressImage } from './utils/imageUtils';
-import { Header } from './components/Header';
-import { PhotoCapture } from './components/PhotoCapture';
-import { TextInput } from './components/TextInput';
-import { ResultCard } from './components/ResultCard';
-import { HistoryList } from './components/HistoryList';
-import { Settings } from './components/Settings';
+import { useState, useCallback } from "react";
+import type { AnalysisResult, HistoryItem } from "./types";
+import { PROVIDER_MODELS } from "./types";
+import { useSettings } from "./hooks/useSettings";
+import { useHistory } from "./hooks/useHistory";
+import { analyzeFood } from "./providers";
+import { compressImage } from "./utils/imageUtils";
+import { Header } from "./components/Header";
+import { PhotoCapture } from "./components/PhotoCapture";
+import { TextInput } from "./components/TextInput";
+import { ResultCard } from "./components/ResultCard";
+import { HistoryList } from "./components/HistoryList";
+import { Settings } from "./components/Settings";
 
 export default function App() {
   const { settings, setSettings } = useSettings();
+  const { history, addItem } = useHistory();
   const [showSettings, setShowSettings] = useState(false);
 
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
-  const [textInput, setTextInput] = useState('');
+  const [textInput, setTextInput] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
 
   const handleImageSelected = useCallback(async (file: File) => {
     try {
       const { base64, dataUrl } = await compressImage(file);
       setImageBase64(base64);
       setImageDataUrl(dataUrl);
+      setError(null);
     } catch {
-      setError('Failed to process image');
+      setError("Failed to process image");
     }
   }, []);
 
@@ -42,7 +44,7 @@ export default function App() {
   const analyze = useCallback(async () => {
     const text = textInput.trim();
     if (!imageBase64 && !text) {
-      setError('Please upload a photo or describe the food.');
+      setError("Please upload a photo or describe the food.");
       return;
     }
 
@@ -56,20 +58,27 @@ export default function App() {
 
       const historyItem: HistoryItem = {
         id: Date.now().toString(),
-        label: analysisResult.verdictTitle || text || 'Food item',
+        label: analysisResult.verdictTitle || text || "Food item",
         verdict: analysisResult.verdict,
         verdictLabel: analysisResult.verdictLabel,
-        time: new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' }),
+        time: new Date().toLocaleTimeString("en", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         thumb: imageDataUrl,
         result: analysisResult,
       };
-      setHistory(prev => [historyItem, ...prev].slice(0, 10));
+      addItem(historyItem);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
-  }, [textInput, imageBase64, imageDataUrl, settings]);
+  }, [textInput, imageBase64, imageDataUrl, settings, addItem]);
 
   const handleHistorySelect = useCallback((item: HistoryItem) => {
     setResult(item.result);
@@ -85,8 +94,8 @@ export default function App() {
         <div className="intro">
           <h2>What are you eating?</h2>
           <p>
-            Snap a photo of a meal, menu, or product label — or just describe it.
-            Get instant advice for your triglyceride-lowering diet.
+            Snap a photo of a meal, menu, or product label — or just describe
+            it. Get instant advice for your triglyceride-lowering diet.
           </p>
         </div>
 
@@ -94,9 +103,7 @@ export default function App() {
           <span className="context-chip">
             Low-fat &middot; Low-carb &middot; Triglyceride reduction
           </span>
-          <span className="context-chip chip-ok">
-            {providerLabel}
-          </span>
+          <span className="context-chip chip-ok">{providerLabel}</span>
         </div>
 
         <PhotoCapture
@@ -112,14 +119,13 @@ export default function App() {
         <button
           className="btn btn-primary"
           disabled={loading || (!imageBase64 && !textInput.trim())}
-          onClick={analyze}
-        >
+          onClick={analyze}>
           {loading ? (
             <>
               <span className="spinner" /> Analyzing...
             </>
           ) : (
-            'Analyze for my diet'
+            "Analyze for my diet"
           )}
         </button>
 
