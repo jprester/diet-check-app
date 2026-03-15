@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useLayoutEffect } from 'react';
 import type { Settings, Theme } from '../types';
 import { PROVIDER_MODELS } from '../types';
 
@@ -28,7 +28,7 @@ function applyTheme(theme: Theme) {
 export function useSettings() {
   const [settings, setSettingsState] = useState<Settings>(loadSettings);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     applyTheme(settings.theme);
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = () => applyTheme(settings.theme);

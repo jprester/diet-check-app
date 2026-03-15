@@ -62,6 +62,7 @@ export function Settings({ settings, onUpdate, onClose }: SettingsProps) {
               <button
                 key={t.value}
                 className={`provider-btn ${settings.theme === t.value ? 'active' : ''}`}
+                aria-pressed={settings.theme === t.value}
                 onClick={() => onUpdate({ theme: t.value })}
               >
                 {t.label}
