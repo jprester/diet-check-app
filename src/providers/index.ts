@@ -60,6 +60,9 @@ async function fetchMockResponse(): Promise<AnalysisResult> {
   const response = await fetch('/mock-responses.json');
   if (!response.ok) throw new Error('Failed to load mock responses');
   const responses: AnalysisResult[] = await response.json();
+  if (!Array.isArray(responses) || responses.length === 0) {
+    throw new Error('Mock responses file is empty or invalid');
+  }
   return responses[Math.floor(Math.random() * responses.length)];
 }
 
