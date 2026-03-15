@@ -7,7 +7,10 @@ const MAX_ITEMS = 10;
 function loadHistory(): HistoryItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed.slice(0, MAX_ITEMS);
+    }
   } catch { /* ignore */ }
   return [];
 }
@@ -36,7 +39,7 @@ export function useHistory() {
 
   const clearHistory = useCallback(() => {
     setHistoryState([]);
-    localStorage.removeItem(STORAGE_KEY);
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
   }, []);
 
   return { history, addItem, clearHistory };

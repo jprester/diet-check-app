@@ -30,6 +30,7 @@ export default function App() {
       const { base64, dataUrl } = await compressImage(file);
       setImageBase64(base64);
       setImageDataUrl(dataUrl);
+      setError(null);
     } catch {
       setError("Failed to process image");
     }
