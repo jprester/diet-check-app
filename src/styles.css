@@ -161,7 +161,7 @@ main {
   border-color: var(--green);
   color: var(--green-dark);
 }
-.capture-btn-primary:hover { opacity: 0.85; }
+.capture-btn-primary:hover { background: var(--green); border-color: var(--green); color: white; }
 .capture-btn-secondary:hover { background: var(--gray-light); }
 .capture-icon { font-size: 28px; }
 
