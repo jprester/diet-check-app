@@ -13,6 +13,7 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
   const [focusIndex, setFocusIndex] = useState(-1);
   const ref = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const selected =
     DIET_PROFILES.find((d) => d.id === selectedDietId) ||
@@ -24,10 +25,15 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
     setOpen(true);
   }, [selectedDietId]);
 
+  const closeDropdown = useCallback(() => {
+    setOpen(false);
+    triggerRef.current?.focus();
+  }, []);
+
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
+        closeDropdown();
       }
     }
     if (open) {
@@ -35,7 +41,7 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, [open]);
+  }, [open, closeDropdown]);
 
   useEffect(() => {
     if (open && listRef.current && focusIndex >= 0) {
@@ -48,9 +54,9 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
   const handleSelect = useCallback(
     (diet: DietProfile) => {
       onChange(diet.id);
-      setOpen(false);
+      closeDropdown();
     },
-    [onChange],
+    [onChange, closeDropdown],
   );
 
   const handleKeyDown = useCallback(
@@ -88,18 +94,19 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
           break;
         case "Escape":
           e.preventDefault();
-          setOpen(false);
+          closeDropdown();
           break;
       }
     },
-    [open, focusIndex, handleSelect, openDropdown],
+    [open, focusIndex, handleSelect, openDropdown, closeDropdown],
   );
 
   return (
     <div className="diet-selector" ref={ref} onKeyDown={handleKeyDown}>
       <button
         className="diet-selector-trigger"
-        onClick={() => (open ? setOpen(false) : openDropdown())}
+        ref={triggerRef}
+        onClick={() => (open ? closeDropdown() : openDropdown())}
         aria-expanded={open}
         aria-haspopup="listbox">
         <span className="diet-selector-emoji">{selected.emoji}</span>

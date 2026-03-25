@@ -24,7 +24,7 @@ function exportHistory(items: HistoryItem[]) {
   a.href = url;
   a.download = `dietcheck-history-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export function HistoryList({ items, onSelect }: HistoryListProps) {
