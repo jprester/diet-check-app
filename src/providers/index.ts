@@ -41,6 +41,12 @@ function parseResult(raw: string): AnalysisResult {
     parsed.score3 = parsed.trigRisk ?? 0;
   }
 
+  // Clamp scores to valid 0-10 range
+  const clamp = (v: unknown) => Math.max(0, Math.min(10, Number(v) || 0));
+  parsed.score1 = clamp(parsed.score1);
+  parsed.score2 = clamp(parsed.score2);
+  parsed.score3 = clamp(parsed.score3);
+
   return parsed;
 }
 

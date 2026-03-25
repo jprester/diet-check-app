@@ -1,6 +1,6 @@
 import { useState, useCallback, useLayoutEffect } from 'react';
 import type { Settings, Theme } from '../types';
-import { PROVIDER_MODELS, DEFAULT_DIET_ID } from '../types';
+import { PROVIDER_MODELS, DIET_PROFILES, DEFAULT_DIET_ID } from '../types';
 
 const STORAGE_KEY = 'trigcheck-settings';
 
@@ -12,6 +12,9 @@ function loadSettings(): Settings {
       const validThemes = ['light', 'dark', 'system'];
       if (parsed.theme && !validThemes.includes(parsed.theme)) {
         parsed.theme = 'system';
+      }
+      if (parsed.dietId && !DIET_PROFILES.some((d: { id: string }) => d.id === parsed.dietId)) {
+        parsed.dietId = DEFAULT_DIET_ID;
       }
       return { theme: 'system', dietId: DEFAULT_DIET_ID, ...parsed };
     }
