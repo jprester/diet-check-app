@@ -25,9 +25,10 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
 
 interface ResultCardProps {
   result: AnalysisResult;
+  scoreLabels?: [string, string, string];
 }
 
-export function ResultCard({ result }: ResultCardProps) {
+export function ResultCard({ result, scoreLabels = ['Fat', 'Carbs', 'Risk'] }: ResultCardProps) {
   const verdictClass =
     result.verdict === 'good'
       ? 'verdict-good'
@@ -43,9 +44,9 @@ export function ResultCard({ result }: ResultCardProps) {
       </div>
 
       <div className="score-bar-wrap">
-        <ScoreBar label="Fat" score={result.fatScore} />
-        <ScoreBar label="Carbs" score={result.carbScore} />
-        <ScoreBar label="Trig risk" score={result.trigRisk} />
+        <ScoreBar label={scoreLabels[0]} score={result.score1} />
+        <ScoreBar label={scoreLabels[1]} score={result.score2} />
+        <ScoreBar label={scoreLabels[2]} score={result.score3} />
       </div>
 
       <div className="result-body">

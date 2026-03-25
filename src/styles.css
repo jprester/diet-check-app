@@ -107,6 +107,91 @@ main {
   margin: 0 auto;
 }
 
+/* Diet Selector */
+.diet-selector {
+  position: relative;
+  margin-bottom: 16px;
+}
+.diet-selector-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+}
+.diet-selector-trigger:hover { border-color: var(--green); }
+.diet-selector-emoji { font-size: 24px; flex-shrink: 0; }
+.diet-selector-label { flex: 1; min-width: 0; }
+.diet-selector-name {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.diet-selector-desc {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.diet-selector-chevron {
+  font-size: 16px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.diet-selector-chevron.open { transform: rotate(180deg); }
+
+.diet-selector-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 6px;
+  z-index: 50;
+  list-style: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  animation: fadeIn 0.12s ease-out;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.diet-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.diet-option:hover { background: var(--gray-light); }
+.diet-option.active { background: var(--green-light); }
+.diet-option-emoji { font-size: 20px; flex-shrink: 0; }
+.diet-option-text { flex: 1; min-width: 0; }
+.diet-option-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+.diet-option-desc {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
 /* Status chips */
 .status-chips {
   display: flex;

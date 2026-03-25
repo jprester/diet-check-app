@@ -1,11 +1,12 @@
 import { useState, useCallback } from "react";
 import type { AnalysisResult, HistoryItem } from "./types";
-import { PROVIDER_MODELS } from "./types";
+import { PROVIDER_MODELS, DIET_PROFILES, DEFAULT_DIET_ID } from "./types";
 import { useSettings } from "./hooks/useSettings";
 import { useHistory } from "./hooks/useHistory";
 import { analyzeFood } from "./providers";
 import { compressImage } from "./utils/imageUtils";
 import { Header } from "./components/Header";
+import { DietSelector } from "./components/DietSelector";
 import { PhotoCapture } from "./components/PhotoCapture";
 import { TextInput } from "./components/TextInput";
 import { ResultCard } from "./components/ResultCard";
@@ -24,6 +25,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [resultDietId, setResultDietId] = useState<string>(DEFAULT_DIET_ID);
+
+  const diet = DIET_PROFILES.find(d => d.id === settings.dietId) || DIET_PROFILES[0];
 
   const handleImageSelected = useCallback(async (file: File) => {
     try {
@@ -55,6 +59,7 @@ export default function App() {
     try {
       const analysisResult = await analyzeFood(settings, imageBase64, text);
       setResult(analysisResult);
+      setResultDietId(settings.dietId);
 
       const historyItem: HistoryItem = {
         id: Date.now().toString(),
@@ -67,6 +72,7 @@ export default function App() {
         }),
         thumb: imageDataUrl,
         result: analysisResult,
+        dietId: settings.dietId,
       };
       addItem(historyItem);
     } catch (err) {
@@ -82,27 +88,35 @@ export default function App() {
 
   const handleHistorySelect = useCallback((item: HistoryItem) => {
     setResult(item.result);
+    setResultDietId(item.dietId || DEFAULT_DIET_ID);
   }, []);
 
   const providerLabel = PROVIDER_MODELS[settings.provider].label;
+  const displayDiet = DIET_PROFILES.find(d => d.id === resultDietId) || diet;
 
   return (
     <>
-      <Header onSettingsClick={() => setShowSettings(true)} />
+      <Header
+        subtitle={diet.subtitle}
+        onSettingsClick={() => setShowSettings(true)}
+      />
 
       <main>
         <div className="intro">
           <h2>What are you eating?</h2>
           <p>
             Snap a photo of a meal, menu, or product label — or just describe
-            it. Get instant advice for your triglyceride-lowering diet.
+            it. Get instant dietary advice.
           </p>
         </div>
 
+        <DietSelector
+          selectedDietId={settings.dietId}
+          onChange={(dietId) => setSettings({ dietId })}
+        />
+
         <div className="status-chips">
-          <span className="context-chip">
-            Low-fat &middot; Low-carb &middot; Triglyceride reduction
-          </span>
+          <span className="context-chip">{diet.chipText}</span>
           <span className="context-chip chip-ok">{providerLabel}</span>
         </div>
 
@@ -129,7 +143,12 @@ export default function App() {
           )}
         </button>
 
-        {result && <ResultCard result={result} />}
+        {result && (
+          <ResultCard
+            result={result}
+            scoreLabels={displayDiet.scoreLabels}
+          />
+        )}
 
         <HistoryList items={history} onSelect={handleHistorySelect} />
       </main>

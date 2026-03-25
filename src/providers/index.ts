@@ -1,36 +1,51 @@
-import type { AnalysisResult, Settings } from '../types';
+import type { AnalysisResult, DietProfile, Settings } from '../types';
+import { DIET_PROFILES, DEFAULT_DIET_ID } from '../types';
 
-export const SYSTEM_PROMPT = `You are a clinical dietitian specialized in lipid disorders, particularly high triglycerides.
-The user is on a strict low-fat, low-carb diet to reduce elevated triglyceride levels.
-Analyze any food, dish, menu item, or product they show or describe and respond ONLY with a JSON object — no preamble, no markdown fences.
+function getDietProfile(dietId: string): DietProfile {
+  return DIET_PROFILES.find(d => d.id === dietId) || DIET_PROFILES.find(d => d.id === DEFAULT_DIET_ID)!;
+}
+
+function buildSystemPrompt(diet: DietProfile): string {
+  const [label1, label2, label3] = diet.scoreLabels;
+  return `${diet.systemPrompt}
 
 JSON structure:
 {
   "verdict": "good" | "ok" | "avoid",
   "verdictLabel": "short label e.g. Great choice / Eat with caution / Avoid",
   "verdictTitle": "one-line summary of what this food is",
-  "fatScore": 0-10 (0=very low fat, 10=very high fat),
-  "carbScore": 0-10 (0=very low carb, 10=very high carb),
-  "trigRisk": 0-10 (0=helps lower triglycerides, 10=strongly raises them),
-  "analysis": "2-3 sentence plain-language explanation of why this is good, ok, or bad for triglycerides specifically",
+  "score1": 0-10 (${label1} — 0=best, 10=worst),
+  "score2": 0-10 (${label2} — 0=best, 10=worst),
+  "score3": 0-10 (${label3} — 0=best, 10=worst),
+  "analysis": "2-3 sentence plain-language explanation of why this is good, ok, or bad for this specific diet",
   "goodFactors": ["list", "of", "positive", "aspects"],
   "badFactors": ["list", "of", "concerns"],
   "tip": "One concrete ordering/eating tip to make this as diet-friendly as possible, or a better alternative if it should be avoided."
 }`;
+}
 
-function getUserPrompt(text?: string): string {
+function getUserPrompt(diet: DietProfile, text?: string): string {
   return text
-    ? `Analyze this food for my low-fat, low-carb, triglyceride-reduction diet: ${text}`
-    : 'Analyze this food image for my low-fat, low-carb, triglyceride-reduction diet.';
+    ? `${diet.userPromptPrefix}: ${text}`
+    : `${diet.userPromptPrefix}.`;
 }
 
 function parseResult(raw: string): AnalysisResult {
   const clean = raw.replace(/```json|```/g, '').trim();
-  return JSON.parse(clean);
+  const parsed = JSON.parse(clean);
+
+  // Support legacy responses that use fatScore/carbScore/trigRisk
+  if (parsed.fatScore !== undefined && parsed.score1 === undefined) {
+    parsed.score1 = parsed.fatScore;
+    parsed.score2 = parsed.carbScore;
+    parsed.score3 = parsed.trigRisk;
+  }
+
+  return parsed;
 }
 
-function buildMessages(provider: string, imageBase64: string | null, text: string) {
-  const prompt = getUserPrompt(text || undefined);
+function buildMessages(provider: string, imageBase64: string | null, text: string, diet: DietProfile) {
+  const prompt = getUserPrompt(diet, text || undefined);
 
   if (provider === 'anthropic') {
     const content: Array<Record<string, unknown>> = [];
@@ -75,6 +90,7 @@ export async function analyzeFood(
     return fetchMockResponse();
   }
 
+  const diet = getDietProfile(settings.dietId);
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
 
@@ -87,8 +103,8 @@ export async function analyzeFood(
     body: JSON.stringify({
       provider: settings.provider,
       model: settings.model,
-      system: SYSTEM_PROMPT,
-      messages: buildMessages(settings.provider, imageBase64, text),
+      system: buildSystemPrompt(diet),
+      messages: buildMessages(settings.provider, imageBase64, text, diet),
       max_tokens: 1024,
     }),
   });
