@@ -33,7 +33,7 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        closeDropdown();
+        setOpen(false);
       }
     }
     if (open) {
@@ -41,7 +41,7 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, [open, closeDropdown]);
+  }, [open]);
 
   useEffect(() => {
     if (open && listRef.current && focusIndex >= 0) {
@@ -108,7 +108,8 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
         ref={triggerRef}
         onClick={() => (open ? closeDropdown() : openDropdown())}
         aria-expanded={open}
-        aria-haspopup="listbox">
+        aria-haspopup="listbox"
+        aria-controls={open ? "diet-listbox" : undefined}>
         <span className="diet-selector-emoji">{selected.emoji}</span>
         <span className="diet-selector-label">
           <span className="diet-selector-name">{selected.name}</span>
@@ -120,7 +121,7 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
       </button>
 
       {open && (
-        <ul className="diet-selector-dropdown" role="listbox" ref={listRef}>
+        <ul id="diet-listbox" className="diet-selector-dropdown" role="listbox" aria-label="Diet profile" ref={listRef}>
           {DIET_PROFILES.map((diet, index) => (
             <li
               key={diet.id}

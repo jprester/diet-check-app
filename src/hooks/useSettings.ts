@@ -13,7 +13,7 @@ function loadSettings(): Settings {
       if (parsed.theme && !validThemes.includes(parsed.theme)) {
         parsed.theme = 'system';
       }
-      if (parsed.dietId && !DIET_PROFILES.some((d: { id: string }) => d.id === parsed.dietId)) {
+      if (typeof parsed.dietId !== 'string' || !DIET_PROFILES.some((d) => d.id === parsed.dietId)) {
         parsed.dietId = DEFAULT_DIET_ID;
       }
       return { theme: 'system', dietId: DEFAULT_DIET_ID, ...parsed };
