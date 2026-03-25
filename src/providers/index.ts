@@ -36,9 +36,9 @@ function parseResult(raw: string): AnalysisResult {
 
   // Support legacy responses that use fatScore/carbScore/trigRisk
   if (parsed.fatScore !== undefined && parsed.score1 === undefined) {
-    parsed.score1 = parsed.fatScore;
-    parsed.score2 = parsed.carbScore;
-    parsed.score3 = parsed.trigRisk;
+    parsed.score1 = parsed.fatScore ?? 0;
+    parsed.score2 = parsed.carbScore ?? 0;
+    parsed.score3 = parsed.trigRisk ?? 0;
   }
 
   return parsed;

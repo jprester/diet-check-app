@@ -72,7 +72,7 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
         setOpen(false);
         break;
     }
-  }, [open, focusIndex]);
+  }, [open, focusIndex, onChange]);
 
   return (
     <div className="diet-selector" ref={ref} onKeyDown={handleKeyDown}>
