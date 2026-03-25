@@ -13,6 +13,14 @@ import { ResultCard } from "./components/ResultCard";
 import { HistoryList } from "./components/HistoryList";
 import { Settings } from "./components/Settings";
 
+function normalizeLegacyResult(r: AnalysisResult): AnalysisResult {
+  const legacy = r as AnalysisResult & { fatScore?: number; carbScore?: number; trigRisk?: number };
+  if (legacy.fatScore !== undefined && legacy.score1 === undefined) {
+    return { ...r, score1: legacy.fatScore, score2: legacy.carbScore ?? 0, score3: legacy.trigRisk ?? 0 };
+  }
+  return r;
+}
+
 export default function App() {
   const { settings, setSettings } = useSettings();
   const { history, addItem } = useHistory();
@@ -27,7 +35,7 @@ export default function App() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [resultDietId, setResultDietId] = useState<string>(DEFAULT_DIET_ID);
 
-  const diet = DIET_PROFILES.find(d => d.id === settings.dietId) || DIET_PROFILES[0];
+  const diet = DIET_PROFILES.find(d => d.id === settings.dietId) || DIET_PROFILES.find(d => d.id === DEFAULT_DIET_ID)!;
 
   const handleImageSelected = useCallback(async (file: File) => {
     try {
@@ -87,7 +95,7 @@ export default function App() {
   }, [textInput, imageBase64, imageDataUrl, settings, addItem]);
 
   const handleHistorySelect = useCallback((item: HistoryItem) => {
-    setResult(item.result);
+    setResult(normalizeLegacyResult(item.result));
     setResultDietId(item.dietId || DEFAULT_DIET_ID);
   }, []);
 
@@ -116,7 +124,7 @@ export default function App() {
         />
 
         <div className="status-chips">
-          <span className="context-chip">{diet.chipText}</span>
+          <span className="context-chip">{(result ? displayDiet : diet).chipText}</span>
           <span className="context-chip chip-ok">{providerLabel}</span>
         </div>
 

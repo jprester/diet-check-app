@@ -175,8 +175,9 @@ main {
   cursor: pointer;
   transition: background 0.12s;
 }
-.diet-option:hover { background: var(--gray-light); }
+.diet-option:hover, .diet-option.focused { background: var(--gray-light); }
 .diet-option.active { background: var(--green-light); }
+.diet-option.active.focused { background: var(--green-light); filter: brightness(0.95); }
 .diet-option-emoji { font-size: 20px; flex-shrink: 0; }
 .diet-option-text { flex: 1; min-width: 0; }
 .diet-option-name {
