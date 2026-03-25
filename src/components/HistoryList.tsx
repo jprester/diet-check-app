@@ -14,6 +14,7 @@ function exportHistory(items: HistoryItem[]) {
     verdictLabel: item.verdictLabel,
     time: item.time,
     result: item.result,
+    dietId: item.dietId,
   }));
   const blob = new Blob([JSON.stringify(exportData, null, 2)], {
     type: "application/json",
@@ -21,9 +22,9 @@ function exportHistory(items: HistoryItem[]) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `trigcheck-history-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `dietcheck-history-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export function HistoryList({ items, onSelect }: HistoryListProps) {

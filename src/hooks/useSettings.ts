@@ -1,6 +1,6 @@
 import { useState, useCallback, useLayoutEffect } from 'react';
 import type { Settings, Theme } from '../types';
-import { PROVIDER_MODELS } from '../types';
+import { PROVIDER_MODELS, DIET_PROFILES, DEFAULT_DIET_ID } from '../types';
 
 const STORAGE_KEY = 'trigcheck-settings';
 
@@ -13,13 +13,17 @@ function loadSettings(): Settings {
       if (parsed.theme && !validThemes.includes(parsed.theme)) {
         parsed.theme = 'system';
       }
-      return { theme: 'system', ...parsed };
+      if (typeof parsed.dietId !== 'string' || !DIET_PROFILES.some((d) => d.id === parsed.dietId)) {
+        parsed.dietId = DEFAULT_DIET_ID;
+      }
+      return { theme: 'system', dietId: DEFAULT_DIET_ID, ...parsed };
     }
   } catch { /* ignore */ }
   return {
     provider: 'openrouter',
     model: PROVIDER_MODELS.openrouter.models[0].id,
     theme: 'system',
+    dietId: DEFAULT_DIET_ID,
   };
 }
 

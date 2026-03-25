@@ -1,7 +1,7 @@
 {
-  "name": "TrigCheck – Diet Food Analyzer",
-  "short_name": "TrigCheck",
-  "description": "Snap a photo or describe food — get instant advice for your triglyceride-lowering diet.",
+  "name": "DietCheck – AI Diet Food Analyzer",
+  "short_name": "DietCheck",
+  "description": "Snap a photo or describe food — get instant dietary advice for any diet plan.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
