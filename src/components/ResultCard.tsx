@@ -1,9 +1,9 @@
-import type { AnalysisResult } from '../types';
+import type { AnalysisResult } from "../types";
 
 function scoreColor(score: number): string {
-  if (score <= 3) return '#1D9E75';
-  if (score <= 6) return '#BA7517';
-  return '#A32D2D';
+  if (score <= 3) return "#1D9E75";
+  if (score <= 6) return "#BA7517";
+  return "#A32D2D";
 }
 
 function ScoreBar({ label, score }: { label: string; score: number }) {
@@ -28,13 +28,13 @@ interface ResultCardProps {
   scoreLabels?: [string, string, string];
 }
 
-export function ResultCard({ result, scoreLabels = ['Fat', 'Carbs', 'Risk'] }: ResultCardProps) {
+export function ResultCard({ result, scoreLabels = ["Fat", "Carbs", "Risk"] }: ResultCardProps) {
   const verdictClass =
-    result.verdict === 'good'
-      ? 'verdict-good'
-      : result.verdict === 'ok'
-        ? 'verdict-ok'
-        : 'verdict-avoid';
+    result.verdict === "good"
+      ? "verdict-good"
+      : result.verdict === "ok"
+        ? "verdict-ok"
+        : "verdict-avoid";
 
   return (
     <div className="result-card">

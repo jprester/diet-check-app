@@ -38,15 +38,13 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
     }
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [open]);
 
   useEffect(() => {
     if (open && listRef.current && focusIndex >= 0) {
-      const items =
-        listRef.current.querySelectorAll<HTMLLIElement>('[role="option"]');
+      const items = listRef.current.querySelectorAll<HTMLLIElement>('[role="option"]');
       items[focusIndex]?.focus();
     }
   }, [open, focusIndex]);
@@ -62,12 +60,7 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (!open) {
-        if (
-          e.key === "ArrowDown" ||
-          e.key === "ArrowUp" ||
-          e.key === "Enter" ||
-          e.key === " "
-        ) {
+        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           openDropdown();
         }
@@ -81,9 +74,7 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
           break;
         case "ArrowUp":
           e.preventDefault();
-          setFocusIndex(
-            (i) => (i - 1 + DIET_PROFILES.length) % DIET_PROFILES.length,
-          );
+          setFocusIndex((i) => (i - 1 + DIET_PROFILES.length) % DIET_PROFILES.length);
           break;
         case "Enter":
         case " ":
@@ -115,13 +106,16 @@ export function DietSelector({ selectedDietId, onChange }: DietSelectorProps) {
           <span className="diet-selector-name">{selected.name}</span>
           <span className="diet-selector-desc">{selected.description}</span>
         </span>
-        <span className={`diet-selector-chevron ${open ? "open" : ""}`}>
-          &#x25BE;
-        </span>
+        <span className={`diet-selector-chevron ${open ? "open" : ""}`}>&#x25BE;</span>
       </button>
 
       {open && (
-        <ul id="diet-listbox" className="diet-selector-dropdown" role="listbox" aria-label="Diet profile" ref={listRef}>
+        <ul
+          id="diet-listbox"
+          className="diet-selector-dropdown"
+          role="listbox"
+          aria-label="Diet profile"
+          ref={listRef}>
           {DIET_PROFILES.map((diet, index) => (
             <li
               key={diet.id}

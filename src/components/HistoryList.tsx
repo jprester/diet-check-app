@@ -48,10 +48,7 @@ export function HistoryList({ items, onSelect }: HistoryListProps) {
               ? "verdict-ok"
               : "verdict-avoid";
         return (
-          <div
-            key={item.id}
-            className="history-item"
-            onClick={() => onSelect(item)}>
+          <div key={item.id} className="history-item" onClick={() => onSelect(item)}>
             {item.thumb ? (
               <img src={item.thumb} className="history-thumb" alt="" />
             ) : (
@@ -61,9 +58,7 @@ export function HistoryList({ items, onSelect }: HistoryListProps) {
               <div className="history-name">{item.label}</div>
               <div className="history-meta">{item.time}</div>
             </div>
-            <span className={`history-badge verdict-badge ${badgeClass}`}>
-              {item.verdictLabel}
-            </span>
+            <span className={`history-badge verdict-badge ${badgeClass}`}>{item.verdictLabel}</span>
           </div>
         );
       })}

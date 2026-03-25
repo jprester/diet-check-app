@@ -14,9 +14,18 @@ import { HistoryList } from "./components/HistoryList";
 import { Settings } from "./components/Settings";
 
 function normalizeLegacyResult(r: AnalysisResult): AnalysisResult {
-  const legacy = r as AnalysisResult & { fatScore?: number; carbScore?: number; trigRisk?: number };
+  const legacy = r as AnalysisResult & {
+    fatScore?: number;
+    carbScore?: number;
+    trigRisk?: number;
+  };
   if (legacy.fatScore !== undefined && legacy.score1 === undefined) {
-    return { ...r, score1: legacy.fatScore, score2: legacy.carbScore ?? 0, score3: legacy.trigRisk ?? 0 };
+    return {
+      ...r,
+      score1: legacy.fatScore,
+      score2: legacy.carbScore ?? 0,
+      score3: legacy.trigRisk ?? 0,
+    };
   }
   return r;
 }
@@ -35,7 +44,9 @@ export default function App() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [resultDietId, setResultDietId] = useState<string>(DEFAULT_DIET_ID);
 
-  const diet = DIET_PROFILES.find(d => d.id === settings.dietId) || DIET_PROFILES.find(d => d.id === DEFAULT_DIET_ID)!;
+  const diet =
+    DIET_PROFILES.find((d) => d.id === settings.dietId) ||
+    DIET_PROFILES.find((d) => d.id === DEFAULT_DIET_ID)!;
 
   const handleImageSelected = useCallback(async (file: File) => {
     try {
@@ -84,11 +95,7 @@ export default function App() {
       };
       addItem(historyItem);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong. Please try again.",
-      );
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -100,21 +107,18 @@ export default function App() {
   }, []);
 
   const providerLabel = PROVIDER_MODELS[settings.provider].label;
-  const displayDiet = DIET_PROFILES.find(d => d.id === resultDietId) || diet;
+  const displayDiet = DIET_PROFILES.find((d) => d.id === resultDietId) || diet;
 
   return (
     <>
-      <Header
-        subtitle={diet.subtitle}
-        onSettingsClick={() => setShowSettings(true)}
-      />
+      <Header subtitle={diet.subtitle} onSettingsClick={() => setShowSettings(true)} />
 
       <main>
         <div className="intro">
           <h2>What are you eating?</h2>
           <p>
-            Snap a photo of a meal, menu, or product label — or just describe
-            it. Get instant dietary advice.
+            Snap a photo of a meal, menu, or product label — or just describe it. Get instant
+            dietary advice.
           </p>
         </div>
 
@@ -151,12 +155,7 @@ export default function App() {
           )}
         </button>
 
-        {result && (
-          <ResultCard
-            result={result}
-            scoreLabels={displayDiet.scoreLabels}
-          />
-        )}
+        {result && <ResultCard result={result} scoreLabels={displayDiet.scoreLabels} />}
 
         <HistoryList items={history} onSelect={handleHistorySelect} />
       </main>

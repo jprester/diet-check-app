@@ -9,7 +9,7 @@ export function TextInput({ value, onChange }: TextInputProps) {
       <h3>Or describe the food</h3>
       <textarea
         value={value}
-        onChange={e => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
         placeholder="e.g. 'grilled chicken shawarma with hummus and flatbread' or 'Oatly oat milk barista edition'"
       />
     </div>

@@ -1,8 +1,11 @@
-import type { AnalysisResult, DietProfile, Settings } from '../types';
-import { DIET_PROFILES, DEFAULT_DIET_ID } from '../types';
+import type { AnalysisResult, DietProfile, Settings } from "../types";
+import { DIET_PROFILES, DEFAULT_DIET_ID } from "../types";
 
 function getDietProfile(dietId: string): DietProfile {
-  return DIET_PROFILES.find(d => d.id === dietId) || DIET_PROFILES.find(d => d.id === DEFAULT_DIET_ID)!;
+  return (
+    DIET_PROFILES.find((d) => d.id === dietId) ||
+    DIET_PROFILES.find((d) => d.id === DEFAULT_DIET_ID)!
+  );
 }
 
 function buildSystemPrompt(diet: DietProfile): string {
@@ -25,13 +28,11 @@ JSON structure:
 }
 
 function getUserPrompt(diet: DietProfile, text?: string): string {
-  return text
-    ? `${diet.userPromptPrefix}: ${text}`
-    : `${diet.userPromptPrefix}.`;
+  return text ? `${diet.userPromptPrefix}: ${text}` : `${diet.userPromptPrefix}.`;
 }
 
 function parseResult(raw: string): AnalysisResult {
-  const clean = raw.replace(/```json|```/g, '').trim();
+  const clean = raw.replace(/```json|```/g, "").trim();
   const parsed = JSON.parse(clean);
 
   // Support legacy responses that use fatScore/carbScore/trigRisk
@@ -50,39 +51,45 @@ function parseResult(raw: string): AnalysisResult {
   return parsed;
 }
 
-function buildMessages(provider: string, imageBase64: string | null, text: string, diet: DietProfile) {
+function buildMessages(
+  provider: string,
+  imageBase64: string | null,
+  text: string,
+  diet: DietProfile,
+) {
   const prompt = getUserPrompt(diet, text || undefined);
 
-  if (provider === 'anthropic') {
+  if (provider === "anthropic") {
     const content: Array<Record<string, unknown>> = [];
     if (imageBase64) {
       content.push({
-        type: 'image',
-        source: { type: 'base64', media_type: 'image/jpeg', data: imageBase64 },
+        type: "image",
+        source: { type: "base64", media_type: "image/jpeg", data: imageBase64 },
       });
     }
-    content.push({ type: 'text', text: prompt });
-    return [{ role: 'user', content }];
+    content.push({ type: "text", text: prompt });
+    return [{ role: "user", content }];
   }
 
   // OpenRouter uses OpenAI-style format
   const content: Array<Record<string, unknown>> = [];
   if (imageBase64) {
     content.push({
-      type: 'image_url',
+      type: "image_url",
       image_url: { url: `data:image/jpeg;base64,${imageBase64}` },
     });
   }
-  content.push({ type: 'text', text: prompt });
-  return [{ role: 'user', content }];
+  content.push({ type: "text", text: prompt });
+  return [{ role: "user", content }];
 }
 
 async function fetchMockResponse(): Promise<AnalysisResult> {
-  const response = await fetch('/mock-responses.json');
-  if (!response.ok) throw new Error(`Failed to load mock responses: ${response.status} ${response.statusText}`);
+  const response = await fetch("/mock-responses.json");
+  if (!response.ok)
+    throw new Error(`Failed to load mock responses: ${response.status} ${response.statusText}`);
   const responses: AnalysisResult[] = await response.json();
   if (!Array.isArray(responses) || responses.length === 0) {
-    throw new Error('Mock responses file is empty or invalid');
+    throw new Error("Mock responses file is empty or invalid");
   }
   return responses[Math.floor(Math.random() * responses.length)];
 }
@@ -92,7 +99,7 @@ export async function analyzeFood(
   imageBase64: string | null,
   text: string,
 ): Promise<AnalysisResult> {
-  if (import.meta.env.VITE_MOCK_API === 'true') {
+  if (import.meta.env.VITE_MOCK_API === "true") {
     return fetchMockResponse();
   }
 
@@ -101,10 +108,10 @@ export async function analyzeFood(
   const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
 
   const response = await fetch(`${baseUrl}/v1/chat`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
       provider: settings.provider,

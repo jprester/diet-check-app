@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback } from "react";
 
 interface PhotoCaptureProps {
   imageDataUrl: string | null;
@@ -22,7 +22,7 @@ export function PhotoCapture({ imageDataUrl, onImageSelected, onClear }: PhotoCa
     (e: React.DragEvent) => {
       e.preventDefault();
       const file = e.dataTransfer.files[0];
-      if (file?.type.startsWith('image/')) onImageSelected(file);
+      if (file?.type.startsWith("image/")) onImageSelected(file);
     },
     [onImageSelected],
   );
@@ -51,27 +51,19 @@ export function PhotoCapture({ imageDataUrl, onImageSelected, onClear }: PhotoCa
         onChange={handleFile}
         hidden
       />
-      <input
-        ref={galleryInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFile}
-        hidden
-      />
+      <input ref={galleryInputRef} type="file" accept="image/*" onChange={handleFile} hidden />
 
       {/* Two big buttons for mobile */}
       <div className="capture-buttons">
         <button
           className="capture-btn capture-btn-primary"
-          onClick={() => cameraInputRef.current?.click()}
-        >
+          onClick={() => cameraInputRef.current?.click()}>
           <span className="capture-icon">&#x1F4F7;</span>
           <span>Take Photo</span>
         </button>
         <button
           className="capture-btn capture-btn-secondary"
-          onClick={() => galleryInputRef.current?.click()}
-        >
+          onClick={() => galleryInputRef.current?.click()}>
           <span className="capture-icon">&#x1F5BC;</span>
           <span>Gallery</span>
         </button>
@@ -80,11 +72,13 @@ export function PhotoCapture({ imageDataUrl, onImageSelected, onClear }: PhotoCa
       {/* Drop zone for desktop */}
       <div
         className="drop-zone"
-        onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }}
-        onDragLeave={e => e.currentTarget.classList.remove('drag-over')}
+        onDragOver={(e) => {
+          e.preventDefault();
+          e.currentTarget.classList.add("drag-over");
+        }}
+        onDragLeave={(e) => e.currentTarget.classList.remove("drag-over")}
         onDrop={handleDrop}
-        onClick={() => galleryInputRef.current?.click()}
-      >
+        onClick={() => galleryInputRef.current?.click()}>
         <p>or drag & drop an image here</p>
       </div>
     </div>
