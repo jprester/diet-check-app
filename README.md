@@ -6,7 +6,7 @@ AI-powered dietary analysis app. Snap a photo of a meal, menu, or product label 
 
 - **Multi-diet profiles** — Triglyceride Reduction, Keto, Mediterranean, Diabetic-Friendly, Heart-Healthy, General Healthy
 - **Photo + text input** — Capture or upload food images, or type a description
-- **AI analysis** — Sends food to an LLM (via Anthropic or OpenRouter) and returns a structured verdict (good / ok / avoid) with scores and tips
+- **AI analysis** — Sends food to an LLM (Gemini 2.5 Flash via OpenRouter) and returns a structured verdict (good / ok / avoid) with scores and tips
 - **History** — Saves past analyses locally with export support
 - **Dark mode** — Light, dark, and system theme options
 
@@ -14,7 +14,7 @@ AI-powered dietary analysis app. Snap a photo of a meal, menu, or product label 
 
 - **Frontend**: React 19 + TypeScript, Vite
 - **Backend**: FastAPI proxy on Railway (handles LLM API calls)
-- **LLM providers**: Anthropic (Claude) or OpenRouter (Gemini, GPT-4o, Llama)
+- **LLM provider**: OpenRouter (Gemini 2.5 Flash)
 
 ## Getting Started
 
@@ -85,7 +85,7 @@ src/
 │   ├── HistoryList.tsx  # Analysis history with export
 │   ├── PhotoCapture.tsx # Camera/upload input
 │   ├── ResultCard.tsx   # Analysis result display
-│   ├── Settings.tsx     # Provider/model/theme settings
+│   ├── Settings.tsx     # Theme settings (provider/model selection disabled)
 │   └── TextInput.tsx    # Text description input
 ├── hooks/
 │   ├── useHistory.ts    # History persistence (localStorage)
