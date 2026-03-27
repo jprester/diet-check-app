@@ -1,5 +1,6 @@
-import type { Settings as SettingsType, LLMProvider, Theme } from "../types";
-import { PROVIDER_MODELS } from "../types";
+import type { Settings as SettingsType, Theme } from "../types";
+// import type { LLMProvider } from "../types";
+// import { PROVIDER_MODELS } from "../types";
 
 const THEME_OPTIONS: { value: Theme; label: string }[] = [
   { value: "light", label: "Light" },
@@ -14,7 +15,7 @@ interface SettingsProps {
 }
 
 export function Settings({ settings, onUpdate, onClose }: SettingsProps) {
-  const providerConfig = PROVIDER_MODELS[settings.provider];
+  // const providerConfig = PROVIDER_MODELS[settings.provider];
 
   return (
     <div className="settings-overlay" onClick={onClose}>
@@ -26,6 +27,7 @@ export function Settings({ settings, onUpdate, onClose }: SettingsProps) {
           </button>
         </div>
 
+        {/* Provider and model selection commented out — all users use OpenRouter + Gemini Flash 2.5
         <div className="settings-field">
           <label>LLM Provider</label>
           <div className="provider-buttons">
@@ -50,6 +52,7 @@ export function Settings({ settings, onUpdate, onClose }: SettingsProps) {
             ))}
           </select>
         </div>
+        */}
 
         <div className="settings-field">
           <label>Theme</label>

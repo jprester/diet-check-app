@@ -16,7 +16,14 @@ function loadSettings(): Settings {
       if (typeof parsed.dietId !== "string" || !DIET_PROFILES.some((d) => d.id === parsed.dietId)) {
         parsed.dietId = DEFAULT_DIET_ID;
       }
-      return { theme: "system", dietId: DEFAULT_DIET_ID, ...parsed };
+      return {
+        theme: "system",
+        dietId: DEFAULT_DIET_ID,
+        ...parsed,
+        // Force openrouter + Gemini Flash 2.5 for all users
+        provider: "openrouter" as const,
+        model: PROVIDER_MODELS.openrouter.models[0].id,
+      };
     }
   } catch {
     /* ignore */
@@ -48,10 +55,12 @@ export function useSettings() {
 
   const setSettings = useCallback((update: Partial<Settings>) => {
     setSettingsState((prev) => {
-      const next = { ...prev, ...update };
-      if (update.provider && update.provider !== prev.provider) {
-        next.model = PROVIDER_MODELS[update.provider].models[0].id;
-      }
+      // Force openrouter + Gemini Flash 2.5 — ignore provider/model from updates
+      const { provider: _p, model: _m, ...safeUpdate } = update;
+      const next = { ...prev, ...safeUpdate };
+      // if (update.provider && update.provider !== prev.provider) {
+      //   next.model = PROVIDER_MODELS[update.provider].models[0].id;
+      // }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       return next;
     });
